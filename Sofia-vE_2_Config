@@ -1,0 +1,151 @@
+system
+ host-name               Sofia-vE_2
+ system-ip               1.100.2.1
+ site-id                 100
+ admin-tech-on-failure
+ no route-consistency-check
+ sp-organization-name    "viptela sdwan"
+ organization-name       "viptela sdwan"
+ console-baud-rate       9600
+ vbond 10.0.0.3
+ aaa
+  auth-order local
+  usergroup basic
+   task system read write
+   task interface read write
+  !
+  usergroup netadmin
+  !
+  usergroup operator
+   task system read
+   task interface read
+   task policy read
+   task routing read
+   task security read
+  !
+  user admin
+   password $6$xLlnCg==$SfBg4dAcZcjW20YEFbdwJYVUP.bsdxkAkaJAXFiOswGqoU3f8j5XzyP3aZ5WX/GbGrM9/p6FekuZu1zEE53971
+  !
+ !
+ logging
+  disk
+   enable
+  !
+ !
+!
+omp
+ no shutdown
+ graceful-restart
+ advertise connected
+ advertise static
+!
+security
+ ipsec
+  authentication-type sha1-hmac ah-sha1-hmac
+ !
+!
+banner
+ login "Only authorized users!"
+ motd  "Authorized access only!"
+!
+vpn 0
+ name Transport
+ interface ge0/0
+  description "Link to NTT"
+  ip address 40.100.2.2/30
+  tunnel-interface
+   encapsulation ipsec
+   color public-internet
+   no allow-service bgp
+   allow-service dhcp
+   allow-service dns
+   allow-service icmp
+   no allow-service sshd
+   no allow-service netconf
+   no allow-service ntp
+   no allow-service ospf
+   no allow-service stun
+   allow-service https
+  !
+  no shutdown
+ !
+ interface ge0/1
+  description "Link to Sprint"
+  ip address 90.100.2.2/30
+  tunnel-interface
+   encapsulation ipsec
+   color biz-internet
+   no allow-service bgp
+   allow-service dhcp
+   allow-service dns
+   allow-service icmp
+   no allow-service sshd
+   no allow-service netconf
+   no allow-service ntp
+   no allow-service ospf
+   no allow-service stun
+   allow-service https
+  !
+  no shutdown
+ !
+ interface ge0/3
+  no shutdown
+ !
+ ip route 0.0.0.0/0 40.100.2.1
+ ip route 0.0.0.0/0 90.100.2.1
+!
+vpn 30
+ name Salles
+ interface ge0/3.30
+  ip address 10.100.30.3/24
+  mtu      1496
+  no shutdown
+  vrrp 30
+   track-omp
+   ipv4 10.100.30.1
+  !
+ !
+ omp
+  advertise connected
+  advertise static
+ !
+!
+vpn 40
+ name HR
+ interface ge0/3.40
+  ip address 10.100.40.3/24
+  mtu      1496
+  no shutdown
+  vrrp 40
+   track-omp
+   ipv4 10.100.40.1
+  !
+ !
+ omp
+  advertise connected
+  advertise static
+ !
+!
+vpn 50
+ name Accounting
+ interface ge0/3.50
+  ip address 10.100.50.3/24
+  mtu      1496
+  no shutdown
+  vrrp 50
+   priority  150
+   track-omp
+   ipv4 10.100.50.1
+  !
+ !
+ omp
+  advertise connected
+  advertise static
+ !
+!
+vpn 512
+ name "Transport VPN"
+ interface eth0
+  shutdown
+ !
+!

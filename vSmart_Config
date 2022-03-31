@@ -1,0 +1,63 @@
+system
+ host-name             vSmart
+ system-ip             2.2.2.2
+ site-id               10
+ admin-tech-on-failure
+ sp-organization-name  "viptela sdwan"
+ organization-name     "viptela sdwan"
+ vbond 10.0.0.3
+ aaa
+  auth-order local radius tacacs
+  usergroup basic
+   task system read write
+   task interface read write
+  !
+  usergroup netadmin
+  !
+  usergroup operator
+   task system read
+   task interface read
+   task policy read
+   task routing read
+   task security read
+  !
+  usergroup tenantadmin
+  !
+  user admin
+   password $6$iu52jomVqO9t8rBf$vgINzO2gjBDvKIdSUS5zmHt5zDA4shTBrEAGp0JQgtS7nl9S                                                                                                             VSKWx6il6ZpVECFmTUucvqrzktU/EcZDqamcx1
+  !
+ !
+ logging
+  disk
+   enable
+  !
+ !
+!
+omp
+ no shutdown
+ graceful-restart
+!
+vpn 0
+ interface eth1
+  ip address 10.0.0.2/28
+  tunnel-interface
+   allow-service all
+   allow-service dhcp
+   allow-service dns
+   allow-service icmp
+   no allow-service sshd
+   no allow-service netconf
+   no allow-service ntp
+   no allow-service stun
+  !
+  no shutdown
+ !
+ ip route 0.0.0.0/0 10.0.0.4
+!
+vpn 512
+ interface eth0
+  ip address 10.0.99.3/29
+  no shutdown
+ !
+ ip route 0.0.0.0/0 10.0.99.1
+!

@@ -1,0 +1,156 @@
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service compress-config
+!
+hostname L3-Paris_2
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition 30
+ !
+ address-family ipv4
+ exit-address-family
+!
+vrf definition 40
+ !
+ address-family ipv4
+ exit-address-family
+!
+vrf definition 50
+ !
+ address-family ipv4
+ exit-address-family
+!
+enable secret 5 $1$pfP.$fVSj9SzvdmS.I885ShnQr0
+!
+no aaa new-model
+clock timezone EET 2 0
+!
+!
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+spanning-tree vlan 30,40 priority 28672
+spanning-tree vlan 50 priority 24576
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+!
+interface Ethernet0/1
+ switchport trunk allowed vlan 300,400,500
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface Ethernet0/2
+ switchport trunk allowed vlan 30,40,50,300,400,500
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface Ethernet0/3
+ switchport trunk allowed vlan 30,40,50
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface Vlan30
+ vrf forwarding 30
+ ip address 10.101.30.4 255.255.255.0
+ standby 1 preempt
+ standby 30 ip 10.101.30.5
+!
+interface Vlan40
+ vrf forwarding 40
+ ip address 10.101.40.4 255.255.255.0
+ standby 0 preempt
+ standby 40 ip 10.101.40.5
+!
+interface Vlan50
+ vrf forwarding 50
+ ip address 10.101.50.4 255.255.255.0
+ standby 50 ip 10.101.50.5
+ standby 50 priority 110
+ standby 50 preempt
+!
+interface Vlan300
+ vrf forwarding 30
+ ip address 10.101.3.4 255.255.255.248
+ ip mtu 1496
+!
+interface Vlan400
+ vrf forwarding 40
+ ip address 10.101.4.4 255.255.255.248
+ ip mtu 1496
+!
+interface Vlan500
+ vrf forwarding 50
+ ip address 10.101.5.4 255.255.255.248
+ ip mtu 1496
+!
+router ospf 1 vrf 30
+ router-id 10.101.30.4
+ capability vrf-lite
+ network 10.101.3.0 0.0.0.7 area 0
+ network 10.101.30.0 0.0.0.255 area 0
+!
+router ospf 2 vrf 40
+ capability vrf-lite
+ network 10.101.4.0 0.0.0.7 area 0
+ network 10.101.40.0 0.0.0.255 area 0
+!
+router ospf 3 vrf 50
+ capability vrf-lite
+ network 10.101.5.0 0.0.0.7 area 0
+ network 10.101.50.0 0.0.0.255 area 0
+!
+ip forward-protocol nd
+!
+ip http server
+!
+ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+!
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ password 7 05080F1C22431F5B4A
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 070C285F4D06485744
+ login
+!
+!
+!
+end

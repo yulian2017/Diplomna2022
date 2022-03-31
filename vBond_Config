@@ -1,0 +1,77 @@
+system
+ host-name               vBond
+ system-ip               3.3.3.3
+ site-id                 10
+ admin-tech-on-failure
+ no route-consistency-check
+ sp-organization-name    "viptela sdwan"
+ organization-name       "viptela sdwan"
+ vbond 10.0.0.3 local
+ aaa
+  auth-order local radius tacacs
+  usergroup basic
+   task system read write
+   task interface read write
+  !
+  usergroup netadmin
+  !
+  usergroup operator
+   task system read
+   task interface read
+   task policy read
+   task routing read
+   task security read
+  !
+  usergroup tenantadmin
+  !
+  user admin
+   password $6$1228XC37G6qFGs6w$5I/8K50OKM80kVMb.9zbjT/78vp7alxrqQlDSMMiLgf420JOb6x8yIWVTEz6xZX8fuYlN0kF1JQQvpLKo7K9u1
+  !
+ !
+ logging
+  disk
+   enable
+  !
+ !
+!
+omp
+ no shutdown
+ graceful-restart
+ advertise connected
+ advertise static
+!
+security
+ ipsec
+  authentication-type ah-sha1-hmac sha1-hmac
+ !
+!
+vpn 0
+ interface ge0/0
+  ip address 10.0.0.3/28
+  ipv6 dhcp-client
+  tunnel-interface
+   encapsulation ipsec
+   allow-service all
+   no allow-service bgp
+   allow-service dhcp
+   allow-service dns
+   allow-service icmp
+   no allow-service sshd
+   no allow-service netconf
+   no allow-service ntp
+   no allow-service ospf
+   no allow-service stun
+   allow-service https
+  !
+  no shutdown
+ !
+ ip route 0.0.0.0/0 10.0.0.4
+!
+vpn 512
+ interface eth0
+  ip address 10.0.99.2/29
+  ipv6 dhcp-client
+  no shutdown
+ !
+ ip route 0.0.0.0/0 10.0.99.1
+!

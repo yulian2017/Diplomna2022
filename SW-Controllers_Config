@@ -1,0 +1,118 @@
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service compress-config
+!
+hostname SW-Controllers
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$asLp$eHMplXxFWyk2eEj/GP.k81
+!
+no aaa new-model
+clock timezone EET 2 0
+!
+!
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+!
+interface Ethernet0/1
+ switchport access vlan 50
+ switchport mode access
+!
+interface Ethernet0/2
+ switchport access vlan 50
+ switchport mode access
+!
+interface Ethernet0/3
+ switchport access vlan 50
+ switchport mode access
+!
+interface Ethernet1/0
+ switchport access vlan 99
+!
+interface Ethernet1/1
+ switchport access vlan 10
+ switchport mode access
+!
+interface Ethernet1/2
+ switchport access vlan 20
+ switchport mode access
+!
+interface Ethernet1/3
+ switchport access vlan 99
+!
+interface Vlan10
+ description Link to NTT-R
+ ip address 40.40.1.2 255.255.255.252
+!
+interface Vlan20
+ description Link to Sprint-R
+ ip address 90.90.1.2 255.255.255.252
+!
+interface Vlan50
+ description Link to Controllers
+ ip address 10.0.0.4 255.255.255.240
+!
+interface Vlan99
+ ip address 10.0.99.1 255.255.255.248
+!
+ip forward-protocol nd
+!
+ip http server
+!
+ip route 0.0.0.0 0.0.0.0 90.90.1.1
+ip route 0.0.0.0 0.0.0.0 40.40.1.1
+ip route 10.0.0.0 255.255.255.240 10.0.0.0
+ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+!
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ password 7 05080F1C22431F5B4A
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 030752180500701E1D
+ login
+!
+!
+!
+end

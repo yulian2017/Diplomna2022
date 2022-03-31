@@ -1,0 +1,103 @@
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service compress-config
+!
+hostname L3-Houston_1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$Hrf3$/TxVsIOCWU.x37o.J.jdl.
+!
+no aaa new-model
+clock timezone EET 2 0
+!
+!
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+ switchport access vlan 300
+ switchport mode access
+!
+interface Ethernet0/1
+ switchport access vlan 300
+ switchport mode access
+!
+interface Ethernet0/2
+ switchport trunk allowed vlan 30,300,301
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface Ethernet0/3
+ switchport access vlan 30
+ switchport mode access
+!
+interface Vlan30
+ ip address 10.102.30.2 255.255.255.0
+ standby 0 priority 110
+ standby 30 ip 10.102.30.1
+ standby 30 preempt
+!
+interface Vlan300
+ ip address 10.102.1.2 255.255.255.248
+!
+!
+router eigrp 11111
+ network 10.102.1.0 0.0.0.7
+ network 10.102.2.0 0.0.0.7
+ network 10.102.30.0 0.0.0.255
+!
+ip forward-protocol nd
+!
+ip http server
+!
+ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+!
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ password 7 110A1016141D5A5E57
+ logging synchronous
+line aux 0
+line vty 0 4
+ password 7 030752180500701E1D
+ login
+!
+!
+!
+end

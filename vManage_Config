@@ -1,0 +1,70 @@
+system
+ host-name             vManage
+ system-ip             1.1.1.1
+ site-id               10
+ admin-tech-on-failure
+ sp-organization-name  "viptela sdwan"
+ organization-name     "viptela sdwan"
+ vbond 10.0.0.3
+ aaa
+  auth-order local radius tacacs
+  usergroup basic
+   task system read write
+   task interface read write
+  !
+  usergroup netadmin
+  !
+  usergroup operator
+   task system read
+   task interface read
+   task policy read
+   task routing read
+   task security read
+  !
+  usergroup tenantadmin
+  !
+  user admin
+   password $6$1Rg5eyRfPklL.4Ux$FfS/pNO0EdBUkIjdZ0sTJy0NC6YKjZzGRvm9kJAm4mPiel0l                                                                                                             quWRTldRbMw/JlpzBpFc/VJYem6uTifpFiT/D0
+  !
+  user anikolov
+   password    $6$Ig6Oq6OPB6avrVuz$nJvR4bjzHJtilNaF..rnGiqj8huYMKjjdKZ9e.Rf4mi5G                                                                                                             ZOcFdxMyYyPyKEqUNFu0IgPvam8cj5XTceRssp.U0
+   description "Anton Nikolov"
+   group       netadmin
+  !
+  user yuli
+   password    $6$wjeVeGvWXqbMfBCa$AXJQIjCzp04WNB6ExmaWzds4VlpHs/cgqZQ.rpsWYi9Fp                                                                                                             9FtuEiz2p.amKsxlvpMYWkx3uiNYRS0T0q2KePjR0
+   description "Yulian Rachev"
+   group       netadmin
+  !
+ !
+ logging
+  disk
+   enable
+  !
+ !
+!
+vpn 0
+ interface eth1
+  ip address 10.0.0.1/28
+  tunnel-interface
+   allow-service all
+   allow-service dhcp
+   allow-service dns
+   allow-service icmp
+   no allow-service sshd
+   no allow-service netconf
+   no allow-service ntp
+   no allow-service stun
+   allow-service https
+  !
+  no shutdown
+ !
+ ip route 0.0.0.0/0 10.0.0.4
+!
+vpn 512
+ interface eth0
+  ip address 10.0.0.109/21
+  no shutdown
+ !
+ ip route 0.0.0.0/0 10.0.0.254
+!
